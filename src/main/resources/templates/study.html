@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/vuex@4"></script>
+</head>
+
+
+
+<body>
+
+    <div id="app">
+        <div>
+            {{content}}
+        </div>
+
+        <span>
+            {{num+1}}
+        </span>
+
+        <div v-text="type"></div>
+        <div v-html="is"></div>
+
+
+        <img :src="photo1" style="width: 100px;height: 100px">
+        <img v-bind:src="photo"style="width: 100px;height: 100px">
+
+        <br>
+        <div style="background-color: deeppink;width: 100px;height: 100px" v-show="num<22"></div>
+        <div style="background-color: orangered;width: 100px;height: 100px" v-if="num<22">1111</div>
+        <div style="background-color: orangered;width: 100px;height: 100px" v-else-if="num==22">2222</div>
+        <div style="background-color: orangered;width: 100px;height: 100px" v-else="num>22">3333</div>
+<div>
+    {{this.$store.state.names}}
+</div>
+
+        <table border="1" width="300px" >
+            <tr v-for="item in list">
+                <td>{{ item.id }}</td>
+                <td>{{ item.name }}</td>
+            </tr>
+        </table>
+
+<input v-model="name" type="text">
+        <button v-on:click="m1()">方法1</button>
+        <button @click="m2('测试')">方法2</button>
+
+    </div>
+
+
+</body>
+
+<script>
+
+    const store = Vuex.createStore({
+        state(){
+            return{
+                //放参数，类似data
+                names:"op",
+                happy:true
+            }
+        },
+        mutations:{
+            //类似methods
+            //修改state数据必须用mutations的方法
+            change(state,value){
+                console.log(value)
+                state.names = value.names
+            }
+        },
+        actions:{
+            //支持异步 ajax代码
+        },
+        getters:{
+            //类似computed
+            //要对数据进行二次操作
+        }
+    });
+
+    const app={
+        data:function () {
+            return{
+                name:'0',
+                content:'内服',
+                num:22,
+                type:true,
+                is:"<span style='color: palevioletred'> Yes </span>",
+                photo:"../static/imagese/faiye.jpg",
+                photo1:"../static/imagese/kazima.jpg",
+                list:[{id:1,name:"张三"},{id:2,name:"赵二"},{id:3,name:"李四"},{id:4,name:"王五"}]
+            }
+        },
+        methods:{
+            m1:function () {
+                alert(1);
+            },
+            m2:function (id) {
+                alert(id);
+                this.$store.commit("change",{
+                    name:id,
+                    num:1111
+                })
+            }
+        },
+        watch:{
+            name(val,ov){
+                console.log(val+'-'+ov)
+            }
+        }
+    }
+
+
+    let root = Vue.createApp(app);
+    root.use(store);
+    let mainObject = root.mount("#app");
+
+  </script>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <title>vue</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/vue@3"></script>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 实现将父级的数据传递到子级组件里 -->
+      <!-- 组件间的数据通信
+      1、父传子 利用属性 在组件对象里props的值定义组件的属性
+      2、子传父 利用事件 this.$emit(事件名，...要发送的参数任意个)
+      3、任何级别之间的传递 -->
+      <good-info :value="item" v-for="item in goodsList"
+                 :key="item.id" @to-cart ="acceptCart"
+      ></good-info>
+    </div>
+  </body>
+</html>
+
+<style scoped>
+
+</style>
+<script>
+  const app = {
+    data: function () {
+      return {
+          goodsList:[{id:1,
+            name:"柑橘调中性淡香水 40ml",
+            pUrl:"./img/p1.jpg",
+            price:100},
+            {id:2,
+            name:"柑橘调中性淡香水 50ml",
+            pUrl:"./img/p2.jpg",
+            price:200},
+            {id:3,
+            name:"柑橘调中性淡香水 60ml",
+            pUrl:"./img/p3.jpg",
+            price:300},
+            {id:4,
+            name:"柑橘调中性淡香水 70ml",
+            pUrl:"./img/p4.jpg",
+            price:400},
+            {id:5,
+            name:"柑橘调中性淡香水 80ml",
+            pUrl:"./img/p5.jpg",
+            price:500},
+            {id:6,
+            name:"柑橘调中性淡香水 40ml",
+            pUrl:"./img/p6.jpg",
+            price:600},]
+      }
+    },
+    mounted(){
+
+    },
+    methods: {
+        acceptCart(goodId){
+          console.log("父级接收到："+goodId);
+        }
+    }
+  }
+  let root = Vue.createApp(app);
+  //定义全局组件
+  root.component("good-info",{
+    template:`<div class="info">
+                  <img :src="value.pUrl" >
+                  <p>{{value.name}}</p>
+                  <p>￥ <span>{{value.price}}</span></p>
+                  <button @click="toCart(value.id)">购买</button>
+              </div>
+              
+              `,
+              //props 定义组件的属性，方便父级传递数据进来
+    props:["value","name","aaa"],
+    methods:{
+      toCart(goodId){
+          console.log(goodId);
+          //取到内部的数据后，往父级组件传递
+          //利用事件传递到外部
+          //事件的定义由方法触发,事件名称若有多个单词，单词之间用短横线隔开，全部小写
+          // this.$emit("自定义的事件名",.....)
+          // 参数1：自定义的事件名，后续可以有任意个参数（要传递的数据）
+          this.$emit("to-cart",goodId)
+      }
+    }
+    
+  });
+  root.mount('#app')
+</script>
+<style>
+  #app{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin:  0 auto;
+  }
+
+  .info{
+    flex:1;
+    text-align: center;
+    padding: 0px 35px;
+    position: relative;
+  }
+  .info img{
+    width: 160px;
+    height: 160px;
+    margin-bottom: 5px;
+  }
+  .info p{
+    text-align: left;
+  }
+  .info p:nth-child(3){
+    color:red
+  }
+  .info p:nth-child(3)>span{
+    font-size: 20px;
+  }
+  .info button{
+    padding: 4px 15px;
+    border-radius: 5px;
+    background-color: lightcoral;
+    color: white;
+    font-size: medium;
+  }
+</style>
